@@ -1,0 +1,20 @@
+{
+    "default": {
+        "dryrun": true,
+        "formatoption": {
+            "snippetInterface": "async-await"
+        },
+        "paths": [
+            "e2etests/tests/features/**/*.feature"
+        ],
+        "require": [
+            "e2etests/tests/steps/**/*.ts", "e2etests/corelib/**/*.ts"
+        ],
+        "requireModule": [
+            "ts-node/register"
+        ],
+        "format": [
+            ["html","reports/cucumber-report.html"]
+        ]
+    }
+}

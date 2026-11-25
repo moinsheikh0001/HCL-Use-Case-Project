@@ -1,0 +1,26 @@
+{
+  "name": "hcl_use_case_automation",
+  "version": "1.0.0",
+  "description": "automation with ts",
+  "keywords": [
+    "pw",
+    "ts",
+    "js"
+  ],
+  "license": "ISC",
+  "author": "Moin",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "cucumber-js test"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^13.3.0",
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^26.6.6",
+    "cucumber-html-reporter": "^7.2.0",
+    "dotenv": "^18.0.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
