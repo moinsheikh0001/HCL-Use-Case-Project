@@ -1,21 +1,16 @@
-import { Locator, Page } from "@playwright/test";
+import { Page } from "@playwright/test";
 import { getPage } from "../../corelib/corelib.spec";
 import { expect } from "@playwright/test";
+import { createLoginPageLocators } from "./loginpagelocator";
 
 export default class LoginPage {
 
     page: Page;
-    accountMenuButton: Locator;
-    loginMenuItem: Locator;
-    loginHeading: Locator;
+    locators: ReturnType<typeof createLoginPageLocators>;
 
     constructor(page: Page) {
         this.page = page;
-        this.accountMenuButton = page.getByRole("button", { name: "Show/hide account menu", exact: true })
-            .getByText("Account", { exact: true });
-        this.loginMenuItem = page.getByRole("menuitem", { name: "Go to login page", exact: true })
-            .getByText("Login", { exact: true });
-        this.loginHeading = page.getByRole("heading", { name: "Login", exact: true });
+        this.locators = createLoginPageLocators(page);
     }
 
     async goToLoginPage() {
@@ -29,11 +24,11 @@ export default class LoginPage {
 
     async loginToApp() {
         await this.page.waitForTimeout(5000);
-        await this.accountMenuButton.click();
+        await this.locators.accountMenuButton.click();
         await this.page.waitForTimeout(15000);
-        await this.loginMenuItem.click();
+        await this.locators.loginMenuItem.click();
         await this.page.waitForTimeout(15000);
-        await expect(this.loginHeading).toContainText("Login");
+        await expect(this.locators.loginHeading).toContainText("Login");
 
         
     }

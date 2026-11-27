@@ -1,0 +1,61 @@
+name: E2E Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Prepare CI-only headless browser and Cucumber settings
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+
+          const config = JSON.parse(fs.readFileSync('cucumber.json', 'utf8'));
+          const profile = config.default;
+          delete profile.dryrun;
+          delete profile.formatoption;
+          profile.dryRun = false;
+          profile.format = ['progress'];
+          fs.writeFileSync(
+            path.join(process.env.RUNNER_TEMP, 'cucumber-ci.json'),
+            JSON.stringify(config)
+          );
+
+          const corelibPath = 'e2etests/corelib/corelib.spec.ts';
+          const corelib = fs.readFileSync(corelibPath, 'utf8');
+          const headedLaunch = "chromium.launch({ headless: false, channel: 'chrome' })";
+          if (!corelib.includes(headedLaunch)) {
+            throw new Error('Expected local headed Chromium launch configuration was not found.');
+          }
+          fs.writeFileSync(
+            corelibPath,
+            corelib.replace(headedLaunch, 'chromium.launch({ headless: true })')
+          );
+          NODE
+
+      - name: Run Cucumber tests
+        run: npx cucumber-js --config "$RUNNER_TEMP/cucumber-ci.json"
