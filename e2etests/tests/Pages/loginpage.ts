@@ -19,6 +19,7 @@ export default class LoginPage {
             throw new Error('Page is not initialized');
         }
         await this.page.goto('https://preview.owasp-juice.shop/#/');
+        await this.locators.dismissButton.click();
         console.log('User is on Home Page');
     }
 
