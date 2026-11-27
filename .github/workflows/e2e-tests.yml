@@ -14,7 +14,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -58,4 +58,6 @@ jobs:
           NODE
 
       - name: Run Cucumber tests
-        run: npx cucumber-js --config "$RUNNER_TEMP/cucumber-ci.json"
+        run: |
+          CONFIG_PATH=$(realpath --relative-to="$PWD" "$RUNNER_TEMP/cucumber-ci.json")
+          npx cucumber-js --config "$CONFIG_PATH"
